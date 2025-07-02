@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:17.5-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_ADMIN}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - erp-network
+  app:
+    build: .
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}"
+    depends_on:
+      - db
+    networks:
+      - erp-network
+
+volumes:
+  postgres_data:
+
+networks:
+  erp-network:

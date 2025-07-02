@@ -1,0 +1,38 @@
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Orders {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+  budget Decimal @db.Decimal(19, 4)
+  material_price Decimal @db.Decimal(19, 4)
+  overhead Decimal @db.Decimal(19, 4)
+  startAt DateTime @default(now())
+  endAt DateTime @default(now())
+  done Boolean @default(false)
+
+  work Work[]
+}
+
+model Employees {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(40)
+  work Work[]
+}
+
+model Work {
+  employeeId Int
+  orderId Int
+  employee Employees @relation(fields: [employeeId], references: [id])
+  order Orders @relation(fields: [orderId], references: [id])
+  startAt DateTime @default(now())
+  endAt DateTime @default(now())
+
+  @@id([employeeId, orderId])
+}
