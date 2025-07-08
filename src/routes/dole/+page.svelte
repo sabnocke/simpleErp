@@ -2,11 +2,13 @@
     import Clock from "$lib/Clock.svelte";
     import OnButton from "$lib/OnButton.svelte";
     import OffButton from "$lib/OffButton.svelte";
+    import NamedSwitch from "$lib/NamedSwitch.svelte";
+    import RadioButton from '$lib/RadioButton.svelte';
+    import OrderBasic from "$lib/OrderBasic.svelte";
 </script>
 
-
-<div>
-    <div id="name-picker-container">
+<div id="layout-container">
+    <div id="name-picker">
         <div id="clock-container">
             <Clock/>
             <div id="two-buttons">
@@ -14,14 +16,15 @@
                 <OffButton/>
             </div>
         </div>
-
+        <div id="line"></div>
+        <RadioButton id={1}/>
+        <RadioButton id={2}/>
     </div>
-    <div id="layout-container">
-        <div id="name-picker"></div>
-        <div id="order-picker"></div>
+    <div id="order-picker">
+        <OrderBasic/>
     </div>
+    <NamedSwitch/>
 </div>
-
 
 <style>
 
@@ -40,48 +43,48 @@
     #order-picker {
         box-sizing: border-box;
         background: #1B1B1B;
-        width: 64vw;
+        width: 60%;
         height: calc(100vh - 20px);
         border-radius: 15px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     #name-picker {
         box-sizing: border-box;
         position: relative;
         background-color: #1B1B1B;
-        width: 34vw;
+        width: 35%;
         height: calc(100vh - 20px);
         border-radius: 15px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     #clock-container {
-        position: absolute;
-        z-index: 10;
-        padding-left: 20px;
-        padding-top: 10px;
-        padding-right: 20px;
         display: flex;
-        flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        width: 34vw;
+        width: 100%;
     }
 
     #two-buttons {
-        gap: 2rem;
         display: flex;
+        gap: 2rem;
+        padding-right: 20px;
     }
 
-    #name-picker-container {
-        display: flex;
-        flex-direction: row;
-        z-index: 10;
-        position: absolute;
-        padding-top: 10px;
+    #line {
+        width: calc(100% - 20px);
+        height: 2px;
+        background: #7E7E7E;
+        margin-top: 2px;
+        margin-bottom: 10px;
         padding-left: 10px;
-        padding-bottom: 10px;
-        width: calc(34vw + 10px);
-        height: 100vh;
-        box-sizing: border-box;
+        padding-right: 10px;
     }
 </style>
