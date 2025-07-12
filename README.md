@@ -36,3 +36,7 @@ npm run build
 You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+
+# To Do
+- [ ] Rename `RadioButton` component to `Worker` or something similar
+- [ ] Use relative units where possible (rem, em, ...)

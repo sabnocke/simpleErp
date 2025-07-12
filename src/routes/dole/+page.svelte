@@ -2,29 +2,29 @@
     import Clock from "$lib/Clock.svelte";
     import OnButton from "$lib/OnButton.svelte";
     import OffButton from "$lib/OffButton.svelte";
-    import NamedSwitch from "$lib/NamedSwitch.svelte";
-    import RadioButton from '$lib/RadioButton.svelte';
-    import OrderBasic from "$lib/OrderBasic.svelte";
+    import Distribution from "$lib/Distribution.svelte";
+    import WorkerDisplay from "$lib/WorkerDisplay.svelte";
+    import OrderBasicDisplay from "$lib/OrderBasicDisplay.svelte";
 </script>
 
-<div id="layout-container">
-    <div id="name-picker">
-        <div id="clock-container">
-            <Clock/>
-            <div id="two-buttons">
-                <OnButton/>
-                <OffButton/>
+<Distribution>
+    <div id="layout-container">
+        <div id="name-picker">
+            <div id="clock-container">
+                <Clock/>
+                <div id="two-buttons">
+                    <OnButton/>
+                    <OffButton/>
+                </div>
             </div>
+            <div id="line"></div>
+            <WorkerDisplay/>
         </div>
-        <div id="line"></div>
-        <RadioButton id={1}/>
-        <RadioButton id={2}/>
+        <div id="order-picker">
+            <OrderBasicDisplay />
+        </div>
     </div>
-    <div id="order-picker">
-        <OrderBasic/>
-    </div>
-    <NamedSwitch/>
-</div>
+</Distribution>
 
 <style>
 
@@ -56,7 +56,7 @@
         box-sizing: border-box;
         position: relative;
         background-color: #1B1B1B;
-        width: 35%;
+        width: 38%;
         height: calc(100vh - 20px);
         border-radius: 15px;
 
@@ -83,7 +83,7 @@
         height: 2px;
         background: #7E7E7E;
         margin-top: 2px;
-        margin-bottom: 10px;
+        /*margin-bottom: 10px;*/
         padding-left: 10px;
         padding-right: 10px;
     }

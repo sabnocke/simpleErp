@@ -1,12 +1,20 @@
-export async function getFullLayout() {
+
+//TODO Change the name of this function
+export async function getOrders() {
     console.log('Fetching layout from database...');
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     return [
         {
+            id: 0,
             name: "something",
-            startAt: new Date(),
-            endAt: new Date(2025, 7, 10)
+            seconds: 10,
         },
+        {
+            id: 1,
+            name: "something different",
+            seconds: 73215,
+        }
     ];
 }
+

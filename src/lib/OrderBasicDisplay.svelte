@@ -1,29 +1,32 @@
 <script lang="ts">
-    import {getFullLayout} from "$lib/database/db";
+    import {getContext} from "svelte";
+    import type {Writable} from "svelte/store";
     import OrderBasic from "$lib/OrderBasic.svelte";
-    import {Time} from "$lib/hub.svelte";
+    import type {OrderStore} from "$lib/customTypes";
+    import Loading from "$lib/Loading.svelte";
 
-    let data: {name: string, startAt: Date, endAt: Date}[] = [];
-    getFullLayout().then((d) => {
-        data = d;
-    })
-
-    function DatesToTime(start: Date, end: Date) {
-        const d = end.getTime() - start.getTime();
-        return Time.fromMilliseconds(d);
-    }
-
-
-    let parsed: {name: string, time: Time}[] = [];
-    for (let item of data) {
-        parsed.push({name: item.name, time: DatesToTime(item.startAt, item.endAt)});
-    }
-
+    const orderData = getContext<Writable<OrderStore>>("orders");
 </script>
 
 
-<div>
-    {#each parsed as {name, time}, idx (name)}
-        <OrderBasic id={idx} days={time.days} hours={time.hours} minutes={time.minutes} seconds={time.seconds}/>
-    {/each}
+<div class="order-display">
+    {#if $orderData.loading}
+        <Loading text="Loading orders..." />
+    {:else if $orderData.error}
+        <p>error</p>
+    {:else if $orderData.data}
+        {#each $orderData.data as {id, name, seconds}}
+            <OrderBasic id={id} name={name} seconds={seconds}/>
+        {/each}
+    {/if}
 </div>
+
+
+<style lang="scss">
+    .order-display {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+</style>

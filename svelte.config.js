@@ -9,9 +9,7 @@ const config = {
 	preprocess: [
 		vitePreprocess(),
 		sveltePreprocess({
-			sass: {
-				indentedSyntax: true,
-			}
+			scss: {}
 		})
 	],
 

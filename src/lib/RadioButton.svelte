@@ -1,41 +1,56 @@
 <script lang="ts">
-    import {selectedId} from "$lib/selectionStore";
-    import {selectionState} from "$lib/selectionState.svelte";
+    import {WorkerSelection} from "$lib/singletons/selection.svelte";
+    import {onMount} from "svelte";
     import Countdown from "$lib/Countdown.svelte";
+    import {Order} from "$lib/customTypes";
 
-    let {id} = $props();
+    let {id, name = "Unknown", order = "None", seconds = 0} = $props();
     let isRunning = $state(false);
 
-    const isActive = $derived($selectedId === id);
+    const isActive = $derived(WorkerSelection.current === id);
 
     function select() {
-        if ($selectedId === id) {
-            selectedId.set(null);
-            selectionState.current = 0; // maybe null is better?
+        if (WorkerSelection.current === id) {
+            WorkerSelection.current = null;
             isRunning = false;
             return;
         }
-        selectedId.set(id);
-        selectionState.current = id;
+        WorkerSelection.current = id;
         isRunning = true;
     }
+
+    let val0 = $derived(WorkerSelection.known.get(id))
+
+    onMount(() => {
+        let newMap = new Map(WorkerSelection.known);
+        newMap.set(id, new Order());
+        WorkerSelection.known = newMap;
+    })
+
+    $effect(() => {
+        console.log(`Hello from RadioButton ${id}`)
+        if (val0) {
+            console.log(`WorkerSelection derived: ${val0.name}`)
+            order = val0.name
+        }
+    })
+
 </script>
 
-<button class:active={isActive} onclick={select} aria-label="RadioButton" class:chosen={selectionState.selected.includes(id)}>
+<button class:active={isActive} onclick={select} aria-label="RadioButton" class:chosen={WorkerSelection.selected.has(id)}>
     <span class="font-semibold text-black text-lg">
-        Jmeno Prijmeni
+        {name}
     </span>
     <span class="font-medium text-black text-lg">
-        Nazev zakazky
+        {order}
     </span>
-    <Countdown days={0} hours={0} minutes={0} seconds={10} isTimerRunning={isRunning} dis={id}></Countdown>
+    <Countdown seconds={seconds} isTimerRunning={isRunning} dis={id}></Countdown>
 </button>
 
 
 <style lang="scss">
   button {
     padding: 5px 0;
-    //border: 2px solid #ccc;
     background-color: #880808;
     opacity: 0.8;
     border-radius: 8px;
@@ -48,10 +63,7 @@
     justify-content: space-around;
     margin-bottom: 10px;
     &.active {
-      //background-color: #007bff;
-      //color: white;
-      //border-color: #007bff;
-      opacity: 1;
+      opacity: 1;   //TODO maybe lighten instead of opacity?
     }
     &.chosen {
       background-color: #0bda51;

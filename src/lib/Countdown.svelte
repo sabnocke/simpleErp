@@ -1,27 +1,23 @@
 <script lang="ts">
-    import {selectionState} from "$lib/selectionState.svelte";
+    import {WorkerSelection} from "$lib/singletons/selection.svelte.js";
 
     let {
-        days = 0,
-        hours = 0,
-        minutes = 0,
         seconds = 0,
+        dayLength = 24,
         isTimerRunning = false,
         dis = 0
     } = $props();
 
-    const initTotalSeconds = $derived(
-        days * 86400 + hours * 3600 + minutes * 60 + seconds
-    );
+    const initTotalSeconds = $derived(seconds);
 
-    let totalSeconds = $state(initTotalSeconds);
+    let totalSeconds = $state(initTotalSeconds); //TODO now what?
 
     $effect(() => {
         totalSeconds = initTotalSeconds;
     });
 
     $effect(() => {
-        if (isTimerRunning && selectionState.current === dis && totalSeconds > 0) {
+        if (isTimerRunning && WorkerSelection.current === dis && totalSeconds > 0) {
             const interval = setInterval(() => {
                 totalSeconds--;
             }, 1000);
@@ -29,8 +25,9 @@
         }
     });
 
-    const remainingDays = $derived(Math.floor(totalSeconds / 86400));
-    const remainingHours = $derived(String(Math.floor((totalSeconds % 86400) / 3600)).padStart(2, '0'));
+    const dayLengthInSeconds = $derived(dayLength * 3600);
+    const remainingDays = $derived(Math.floor(totalSeconds / dayLengthInSeconds));
+    const remainingHours = $derived(String(Math.floor((totalSeconds % dayLengthInSeconds) / 3600)).padStart(2, '0'));
     const remainingMinutes = $derived(String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0'));
     const remainingSeconds = $derived(String(totalSeconds % 60).padStart(2, '0'));
 </script>
@@ -48,6 +45,5 @@
         font-size: 1.5rem;
         color: black;
         font-weight: 500;
-        /*font-weight: bold;*/
     }
 </style>

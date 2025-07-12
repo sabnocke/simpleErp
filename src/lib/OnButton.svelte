@@ -1,24 +1,74 @@
 <script lang="ts">
-import {selectedId} from "$lib/selectionStore.js";
-import {selectionState} from "$lib/selectionState.svelte.js";
+    import {getContext} from "svelte";
+    import type {Writable} from "svelte/store";
+    import {type OrderStore, Order} from "$lib/customTypes";
+    import {WorkerSelection, OrderSelection} from "$lib/singletons/selection.svelte.js";
 
-function promote() {
-    const s = selectionState.selected.length;
-    const item = selectionState.current;
-    if (item === 0) {
-        alert("No option chosen!");
+    let isWaiting = $state(false);
+    let OrderStore = getContext<Writable<OrderStore>>("orders");
+
+    function armCoordinator() {
+        if (!isWaiting) {
+            console.log("Coordinator armed")
+            isWaiting = true;
+        } else {
+            console.log("Coordinator disarmed")
+            isWaiting = false;
+        }
+
     }
-    const ns = selectionState.selected.push(item);
-    if (ns === s) {
-        alert(`Failed promoting option with id: ${item}`);
-    }
-}
+
+    $effect(() => {
+        // console.log(`Worker: ${WorkerSelection.current}, Order: ${OrderSelection.current}`);
+        if (isWaiting && $OrderStore.data && WorkerSelection.current !== null && OrderSelection.current !== null) {
+            // console.log($knownWorkers);
+
+            let items = $OrderStore.data.filter(item => item.id === OrderSelection.current)
+
+            if (items.length === 0)
+                return;
+
+            let {id, name, seconds} = items[0];
+            let newMap = new Map(WorkerSelection.known);
+            newMap.set(WorkerSelection.current, new Order(id, name, seconds))
+            WorkerSelection.known = newMap;
+
+            // console.log(WorkerSelection.known)
+            // console.log(`Success: worker id: ${WorkerSelection.current} paired with order: ${name}`);
+            WorkerSelection.selected.add(WorkerSelection.current);
+            OrderSelection.selected.add(WorkerSelection.current);
+            isWaiting = false;
+            WorkerSelection.current = null;
+            OrderSelection.current = null;
+        }
+    })
 </script>
 
-<button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-4 px-8 border border-blue-500 hover:border-transparent rounded z-10"
-        on:click={promote}>
+
+<button class="py-4 px-8" onclick={armCoordinator} class:chosen={isWaiting}>
     on
 </button>
 
-<!--alert(`Currently selected: ${$selectedId}, state: ${selectionState.current}`)-->
 
+<style lang="scss">
+    button {
+      background-color: transparent;
+      font-weight: 600;
+      color: oklch(48.8% 0.243 264.376);
+      border-radius: 0.25rem;
+      border-color: oklch(62.3% 0.214 259.815);
+      border-width: 1px;
+
+      &:hover {
+        background-color: oklch(62.3% 0.214 259.815);
+        color: white;
+        border-color: transparent;
+      }
+
+      &.chosen {
+        border-color: transparent;
+        background-color: oklch(62.3% 0.214 259.815);
+        color: white;
+      }
+    }
+</style>
