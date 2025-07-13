@@ -25,11 +25,6 @@
         WorkerSelection.current = id;
     }
 
-    /*$effect(() => {
-        console.log("WorkerSelection.selected", WorkerSelection.selected)
-        console.log("WorkerSelection.known", WorkerSelection.known)
-    })*/
-
     $effect(() => {
         if (!WorkerSelection.known.has(id)) {
             //TODO following section can be removed if the Order object is stateful, i.e. $state(new Order()) (probably)

@@ -8,19 +8,13 @@
 
     let {children} = $props();
 
-    const WorkerStore = writable<{ loading: boolean, data: WorkerReturnType | null, error: any }>({
+    const WorkerStore = writable<GenericStore<WorkerReturnType>>({
         loading: true,
         data: null,
         error: null,
     });
 
-    // let WorkerStore = $state<GenericStore<WorkerReturnType>>({
-    //     loading: true,
-    //     data: null,
-    //     error: null,
-    // })
-
-    const OrderStore = writable<{ loading: boolean, data: OrderReturnType | null, error: any }>({
+    const OrderStore = writable<GenericStore<OrderReturnType>>({
         loading: true,
         data: null,
         error: null,

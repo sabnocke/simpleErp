@@ -6,9 +6,9 @@
 
     let isWaiting = $state(false);
     let OrderStore = getContext<Writable<OrderStore>>("orders");
-    // let OrderStore = getContext<() => GenericStore<OrderReturnType>>("orders")();
 
     function armCoordinator() {
+        //TODO add ability to only pick on/off not both
         if (!isWaiting) {
             console.log("Coordinator armed")
             isWaiting = true;
@@ -16,15 +16,11 @@
             console.log("Coordinator disarmed")
             isWaiting = false;
         }
-
     }
 
     $effect(() => {
-        // console.log(`Worker: ${WorkerSelection.current}, Order: ${OrderSelection.current}`);
         if (isWaiting && $OrderStore.data && WorkerSelection.current !== null && OrderSelection.current !== null) {
-            // console.log($knownWorkers);
-
-            let items = $OrderStore.data.filter(item => item.id === OrderSelection.current)
+            let items = $OrderStore.data.filter(item => item.id === OrderSelection.current) //TODO could be const
 
             if (items.length === 0)
                 return;
@@ -35,8 +31,6 @@
             newMap.set(WorkerSelection.current, new Order(id, name, seconds))
             WorkerSelection.known = newMap;
 
-            // console.log(WorkerSelection.known)
-            // console.log(`Success: worker id: ${WorkerSelection.current} paired with order: ${name}`);
             WorkerSelection.selected.add(WorkerSelection.current);
             OrderSelection.selected.add(WorkerSelection.current);
             isWaiting = false;

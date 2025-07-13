@@ -6,7 +6,6 @@
     import Loading from "$lib/Loading.svelte";
 
     const orderData = getContext<Writable<OrderStore>>("orders");
-    // const orderData = getContext<() => GenericStore<OrderReturnType>>("orders")();
 </script>
 
 

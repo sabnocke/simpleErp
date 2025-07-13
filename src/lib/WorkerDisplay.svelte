@@ -5,21 +5,14 @@
     import RadioButton from "$lib/RadioButton.svelte";
     import Loading from "$lib/Loading.svelte";
 
-    type WorkerStoreTemplate = {
-        loading: boolean,
-        data: WorkerReturnType | null,
-        error: Error | null
-    }
-
-    const workerData: Writable<WorkerStoreTemplate> = getContext("workers");
-    // const workerData = getContext<() => GenericStore<WorkerReturnType>>("workers")();
+    const workerData: Writable<GenericStore<WorkerReturnType>> = getContext("workers");
 </script>
 
 <div class="worker-display">
     {#if $workerData.loading}
         <Loading text="Loading user data..."/>
     {:else if $workerData.error}
-        <p style="color: red;">Error: {$workerData.error.message}</p>
+        <p style="color: red;">Error: {$workerData.error.message ?? "?"}</p>
     {:else if $workerData.data}
         {#each $workerData.data as {name}, idx (name)}
             <RadioButton id={idx} name={name}/>

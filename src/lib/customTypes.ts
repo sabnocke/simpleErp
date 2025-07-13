@@ -1,15 +1,13 @@
 import {Nullable} from "typescript-nullable";
 
-export type RegisterApi = {
+/*export type RegisterApi = {
     register(workerId: number, orderId: number): void,
     knownList: Map<number, {
         orderId: number,
         startAt: Date,
         endAt: Date,
     }>
-}
-
-export type KnownWorkersType = Map<number, Order>
+}*/
 
 export type GenericStore<StoreType> = {
     loading: boolean,
@@ -41,6 +39,7 @@ export class Order {
     }
 }
 
+/*
 export class Time {
     public days: number;
     public hours: number;
@@ -92,4 +91,4 @@ export class Time {
 
         return new Time(days, hours, minutes, seconds);
     }
-}
+}*/

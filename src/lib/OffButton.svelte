@@ -2,11 +2,10 @@
     import {WorkerSelection, OrderSelection} from "$lib/singletons/selection.svelte.js";
     import {getContext} from "svelte";
     import type {Writable} from "svelte/store";
-    import {Order, type OrderStore} from "$lib/customTypes.js";
+    import {Order, type GenericStore, type OrderReturnType} from "$lib/customTypes.js";
 
     let isWaiting = $state(false);
-    let OrderStore = getContext<Writable<OrderStore>>("orders");
-    // let OrderStore = getContext<() => GenericStore<OrderReturnType>>("orders")();
+    let OrderStore = getContext<Writable<GenericStore<OrderReturnType>>>("orders");
 
     function armCoordinator() {
         isWaiting = !isWaiting;
