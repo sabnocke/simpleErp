@@ -8,7 +8,7 @@ export async function getOrders() {
         {
             id: 0,
             name: "something",
-            seconds: 10,
+            seconds: 1234,
         },
         {
             id: 1,

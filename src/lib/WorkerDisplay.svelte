@@ -1,7 +1,7 @@
 <script lang="ts">
     import {getContext} from "svelte";
     import type {Writable} from "svelte/store";
-    import type {WorkerReturnType} from "$lib/customTypes";
+    import type {WorkerReturnType, GenericStore} from "$lib/customTypes";
     import RadioButton from "$lib/RadioButton.svelte";
     import Loading from "$lib/Loading.svelte";
 
@@ -12,6 +12,7 @@
     }
 
     const workerData: Writable<WorkerStoreTemplate> = getContext("workers");
+    // const workerData = getContext<() => GenericStore<WorkerReturnType>>("workers")();
 </script>
 
 <div class="worker-display">
@@ -21,7 +22,7 @@
         <p style="color: red;">Error: {$workerData.error.message}</p>
     {:else if $workerData.data}
         {#each $workerData.data as {name}, idx (name)}
-            <RadioButton id={idx} name={name} seconds={10}/>
+            <RadioButton id={idx} name={name}/>
         {/each}
     {/if}
 </div>

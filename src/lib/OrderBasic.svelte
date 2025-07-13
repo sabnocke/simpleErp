@@ -1,6 +1,6 @@
 <script lang="ts">
     import Countdown from "$lib/Countdown.svelte";
-    import {OrderSelection} from "$lib/singletons/selection.svelte.js";
+    import {OrderSelection, WorkerSelection} from "$lib/singletons/selection.svelte.js";
 
     let {
         name = "DEFAULT",
@@ -8,26 +8,31 @@
         seconds = 0,
     } = $props();
 
-    let isRunning = $state(false);
     const isActive = $derived(OrderSelection.current === id)
+
+    const bandwidth = $derived(
+        [...WorkerSelection.known.values().filter(item => item.id === id)].length
+    )
+
+    let isRunning = $derived(bandwidth > 0);
 
     function select() {
         if (OrderSelection.current === id) {
-            isRunning = false;
             OrderSelection.current = null;
             return;
         }
         OrderSelection.current = id;
     }
-
 </script>
+
 
 <button class:active={isActive} onclick={select} aria-label="One of orders" class="order-basic" >
     <span class="text-lg font-semibold text-black">
         {name}
     </span>
-    <Countdown seconds={seconds} dis={id} dayLength={8}/>
+    <Countdown initialSeconds={seconds} dis={id} dayLength={8} usage={bandwidth} isTimerRunning={isRunning}/>
 </button>
+
 
 <style lang="scss">
     @use "sass:color";

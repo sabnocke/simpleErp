@@ -6,6 +6,7 @@
 
     let isWaiting = $state(false);
     let OrderStore = getContext<Writable<OrderStore>>("orders");
+    // let OrderStore = getContext<() => GenericStore<OrderReturnType>>("orders")();
 
     function armCoordinator() {
         isWaiting = !isWaiting;

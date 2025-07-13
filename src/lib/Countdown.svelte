@@ -1,35 +1,38 @@
 <script lang="ts">
-    import {WorkerSelection} from "$lib/singletons/selection.svelte.js";
+    import {SyncIndex, initializeSync} from "$lib/singletons/selection.svelte.js";
 
     let {
-        seconds = 0,
+        initialSeconds = 0,
         dayLength = 24,
         isTimerRunning = false,
-        dis = 0
+        dis = -1,
+        usage = 1,
     } = $props();
 
-    const initTotalSeconds = $derived(seconds);
+    initializeSync(dis, initialSeconds);
 
-    let totalSeconds = $state(initTotalSeconds); //TODO now what?
+    let totalSeconds = $state(initialSeconds);
 
-    $effect(() => {
-        totalSeconds = initTotalSeconds;
-    });
-
-    $effect(() => {
-        if (isTimerRunning && WorkerSelection.current === dis && totalSeconds > 0) {
-            const interval = setInterval(() => {
-                totalSeconds--;
-            }, 1000);
-            return () => clearInterval(interval);
-        }
-    });
-
+    const usageUpdate = $derived(usage > 0 ? usage : 1);
     const dayLengthInSeconds = $derived(dayLength * 3600);
     const remainingDays = $derived(Math.floor(totalSeconds / dayLengthInSeconds));
     const remainingHours = $derived(String(Math.floor((totalSeconds % dayLengthInSeconds) / 3600)).padStart(2, '0'));
     const remainingMinutes = $derived(String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0'));
     const remainingSeconds = $derived(String(totalSeconds % 60).padStart(2, '0'));
+
+    $effect(() => {
+        totalSeconds = initialSeconds;
+    });
+
+    $effect(() => {
+        if (isTimerRunning && totalSeconds > 0) {
+            const interval = setInterval(() => {
+                totalSeconds--;
+                SyncIndex.get(dis)!.count--
+            }, 1000 / usageUpdate);
+            return () => clearInterval(interval);
+        }
+    });
 </script>
 
 <div class="countdown">
@@ -38,6 +41,7 @@
     {/if}
     <span>{remainingHours}:{remainingMinutes}:{remainingSeconds}</span>
 </div>
+
 
 <style>
     .countdown {

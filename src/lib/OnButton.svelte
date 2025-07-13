@@ -6,6 +6,7 @@
 
     let isWaiting = $state(false);
     let OrderStore = getContext<Writable<OrderStore>>("orders");
+    // let OrderStore = getContext<() => GenericStore<OrderReturnType>>("orders")();
 
     function armCoordinator() {
         if (!isWaiting) {
@@ -29,6 +30,7 @@
                 return;
 
             let {id, name, seconds} = items[0];
+            //TODO following section can be removed if the Order object is stateful, i.e. $state(new Order()) (probably)
             let newMap = new Map(WorkerSelection.known);
             newMap.set(WorkerSelection.current, new Order(id, name, seconds))
             WorkerSelection.known = newMap;

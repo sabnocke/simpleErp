@@ -1,50 +1,61 @@
 <script lang="ts">
-    import {WorkerSelection} from "$lib/singletons/selection.svelte";
-    import {onMount} from "svelte";
-    import Countdown from "$lib/Countdown.svelte";
+    import {WorkerSelection, SyncIndex} from "$lib/singletons/selection.svelte";
     import {Order} from "$lib/customTypes";
 
-    let {id, name = "Unknown", order = "None", seconds = 0} = $props();
-    let isRunning = $state(false);
+    let {id, name = "Unknown", order = "None"} = $props();
 
+    let val0 = $derived(WorkerSelection.known.get(id))
+    let sync = $derived(SyncIndex.get(val0?.id ?? -1)?.count ?? -1)
+
+    const orderName = $derived(val0?.name ?? order)
     const isActive = $derived(WorkerSelection.current === id);
+    const dayLength = 8     //TODO maybe prop?
+
+    const dayLengthInSeconds = $derived(dayLength * 3600);
+    const remainingDays = $derived(Math.floor(sync / dayLengthInSeconds));
+    const remainingHours = $derived(String(Math.floor((sync % dayLengthInSeconds) / 3600)).padStart(2, '0'));
+    const remainingMinutes = $derived(String(Math.floor((sync % 3600) / 60)).padStart(2, '0'));
+    const remainingSeconds = $derived(String(sync % 60).padStart(2, '0'));
 
     function select() {
         if (WorkerSelection.current === id) {
             WorkerSelection.current = null;
-            isRunning = false;
             return;
         }
         WorkerSelection.current = id;
-        isRunning = true;
     }
 
-    let val0 = $derived(WorkerSelection.known.get(id))
-
-    onMount(() => {
-        let newMap = new Map(WorkerSelection.known);
-        newMap.set(id, new Order());
-        WorkerSelection.known = newMap;
-    })
+    /*$effect(() => {
+        console.log("WorkerSelection.selected", WorkerSelection.selected)
+        console.log("WorkerSelection.known", WorkerSelection.known)
+    })*/
 
     $effect(() => {
-        console.log(`Hello from RadioButton ${id}`)
-        if (val0) {
-            console.log(`WorkerSelection derived: ${val0.name}`)
-            order = val0.name
+        if (!WorkerSelection.known.has(id)) {
+            //TODO following section can be removed if the Order object is stateful, i.e. $state(new Order()) (probably)
+            let newMap = new Map(WorkerSelection.known);
+            newMap.set(id, new Order());
+            WorkerSelection.known = newMap;
         }
     })
-
 </script>
+
 
 <button class:active={isActive} onclick={select} aria-label="RadioButton" class:chosen={WorkerSelection.selected.has(id)}>
     <span class="font-semibold text-black text-lg">
         {name}
     </span>
     <span class="font-medium text-black text-lg">
-        {order}
+        {orderName}
     </span>
-    <Countdown seconds={seconds} isTimerRunning={isRunning} dis={id}></Countdown>
+    <div class="countdown">
+        {#if remainingDays > 0}
+            <span>{remainingDays}</span>
+        {/if}
+        <span>
+        {remainingHours}:{remainingMinutes}:{remainingSeconds}
+        </span>
+    </div>
 </button>
 
 
@@ -68,5 +79,12 @@
     &.chosen {
       background-color: #0bda51;
     }
+  }
+
+  .countdown {
+    font-family: monospace;
+    font-size: 1.5rem;
+    color: black;
+    font-weight: 500;
   }
 </style>

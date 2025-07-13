@@ -30,5 +30,8 @@
     "@parcel/watcher",
     "@tailwindcss/oxide",
     "svelte-preprocess"
-  ]
+  ],
+  "dependencies": {
+    "typescript-nullable": "^0.6.0"
+  }
 }

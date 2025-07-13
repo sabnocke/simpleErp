@@ -5,6 +5,9 @@ export async function getWorkers() {
         },
         {
             name: "some other name",
+        },
+        {
+            name: "Franta",
         }
     ];
 }
