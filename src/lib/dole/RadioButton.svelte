@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {WorkerSelection, SyncIndex} from "$lib/singletons/selection.svelte";
+    import {WorkerSelection, SyncIndex} from "$lib/singletons/selection.svelte.js";
     import {Order} from "$lib/customTypes";
 
     let {id, name = "Unknown", order = "None"} = $props();

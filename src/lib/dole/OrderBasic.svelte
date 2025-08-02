@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Countdown from "$lib/Countdown.svelte";
+    import Countdown from "$lib/dole/Countdown.svelte";
     import {OrderSelection, WorkerSelection} from "$lib/singletons/selection.svelte.js";
 
     let {

@@ -1,10 +1,10 @@
 <script>
     import Clock from "$lib/Clock.svelte";
-    import OnButton from "$lib/OnButton.svelte";
-    import OffButton from "$lib/OffButton.svelte";
-    import Distribution from "$lib/Distribution.svelte";
-    import WorkerDisplay from "$lib/WorkerDisplay.svelte";
-    import OrderBasicDisplay from "$lib/OrderBasicDisplay.svelte";
+    import OnButton from "$lib/dole/OnButton.svelte";
+    import OffButton from "$lib/dole/OffButton.svelte";
+    import Distribution from "$lib/dole/Distribution.svelte";
+    import WorkerDisplay from "$lib/dole/WorkerDisplay.svelte";
+    import OrderBasicDisplay from "$lib/dole/OrderBasicDisplay.svelte";
 </script>
 
 <Distribution>

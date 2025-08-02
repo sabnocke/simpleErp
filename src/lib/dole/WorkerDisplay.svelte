@@ -2,8 +2,8 @@
     import {getContext} from "svelte";
     import type {Writable} from "svelte/store";
     import type {WorkerReturnType, GenericStore} from "$lib/customTypes";
-    import RadioButton from "$lib/RadioButton.svelte";
-    import Loading from "$lib/Loading.svelte";
+    import RadioButton from "$lib/dole/RadioButton.svelte";
+    import Loading from "$lib/dole/Loading.svelte";
 
     const workerData: Writable<GenericStore<WorkerReturnType>> = getContext("workers");
 </script>

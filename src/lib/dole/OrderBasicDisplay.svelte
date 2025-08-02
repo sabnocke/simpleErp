@@ -1,9 +1,9 @@
 <script lang="ts">
     import {getContext} from "svelte";
     import type {Writable} from "svelte/store";
-    import OrderBasic from "$lib/OrderBasic.svelte";
+    import OrderBasic from "$lib/dole/OrderBasic.svelte";
     import type {OrderStore} from "$lib/customTypes";
-    import Loading from "$lib/Loading.svelte";
+    import Loading from "$lib/dole/Loading.svelte";
 
     const orderData = getContext<Writable<OrderStore>>("orders");
 </script>
