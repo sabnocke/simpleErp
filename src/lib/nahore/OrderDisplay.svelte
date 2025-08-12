@@ -1,4 +1,6 @@
 <script lang="ts">
+
+
     import {getOrders} from "../database/loadOrders.js"
     import OrderOne from "$lib/nahore/OrderOne.svelte";
     import type {OrderReturnType, GenericStore} from "$lib/customTypes.js";
@@ -35,36 +37,25 @@
     {:else if OrderStore.error}
         <span> error </span>
     {:else if OrderStore.data !== null}
-        {#each headerNames as headerName}
-            {#if headerName === "name"}
-                {#each OrderStore.data as {id, name, seconds}}
+        <div class="header">
+            <span>Name</span>
+            <div class="collective-header">
+                <span class="coll-head-item">Budget</span>
+                <span class="coll-head-item">Material</span>
+                <span class="coll-head-item">Overhead</span>
+            </div>
+            <span>Done</span>
+        </div>
 
-
-                    <div class="row-display one">
-                        <span class="name">{name}</span>
-                        <FancyInput type="0"/>
-                        <Checkbox/>
-                    </div>
-                {/each}
-            {/if}
-        {/each}
+        <div class="one">
+        <span>Name</span>
+<!--        {#each OrderStore.data as {id, name, seconds}}-->
+<!--            <span>{name}</span>-->
+<!--        {/each}-->
+        <FancyInput id="0" type="budget" label="" subclass="a" />
+        <Checkbox />
+        </div>
     {/if}
-
-
-
-<!--    <div class="row-display header">-->
-
-<!--        <div class="input-group">-->
-<!--            <span>Budget</span>-->
-<!--            <span>Material</span>-->
-<!--            <span>Overhead</span>-->
-<!--            <div class="spacing"></div>-->
-<!--            <span>Hours</span>-->
-<!--        </div>-->
-<!--        <span>Done</span>-->
-<!--    </div>-->
-
-
 </div>
 
 
@@ -84,23 +75,17 @@
     flex: 1 0 500px;
   }
 
-  .row-display {
-    position: relative;
-    display: flex;
-  }
-
   .header {
     position: sticky;
     background-color: black;
     color: white;
     width: calc(100% - 1.5em);
     display: flex;
-    flex: 1;
     top: 0;
     z-index: 10;
     padding: 0.5em;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: space-between;
   }
 
   .one {
@@ -109,39 +94,35 @@
     background-color: #cccccc;
     display: flex;
     align-items: center;
-    padding: 0.5em 0.5em 0.5em 0.5em;
-    justify-content: space-around;
+    padding: 0.5em 1em 0.5em 0.5em;
+    justify-content: space-between;
   }
 
-  .name {
-    width: 20%;
-  }
-
-
-
-  .input-group {
+  .collective-header {
+    width: 50%;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    width: 70%;
-    padding-right: 0.5em;
-    margin-right: 0.5em;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    padding: 5px 10px 5px 10px;
   }
 
-  .spacing {
-    margin-left: 0.5em;
-    margin-right: 0.5em;
-  }
+  .coll-head-item {
 
-  .overhead {
-    width: 15%;
-    font-size: 18px;
-    display: flex;
-    justify-content: center;
-    padding: 5px 25px 5px 20px;
-  }
+    width: calc(100% / 3);
 
-  .hours {
-    padding-right: 0.5em;
+    &:nth-child(1) {
+      display: block;
+      order: 0;
+    }
+
+    &:nth-child(2) {
+      display: block;
+      order: 0;
+    }
+
+    &:nth-child(3) {
+      display: block;
+      order: 0;
+    }
   }
 </style>
