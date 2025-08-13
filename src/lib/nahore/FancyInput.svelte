@@ -1,35 +1,47 @@
 <script lang="ts">
-    // import {FieldItem, fieldStorage} from "$lib/singletons/inputHandler.svelte";
+    import {fullMatrix} from "$lib/singletons/inputHandler.svelte";
+
+    let {row, col} = $props()
 
     let base = 100;
 
-    let budget = $state(0);
-    let material = $state(0);
-    let overhead = $state(0);
+    let isStringNumeric = (value: string) => !isNaN(Number(value))
+
+    let ord = (x: number , y: number) => 0.5 * (x + y) * (x + y + 1) + y
+
+    let num = $state(0);
+
+    let numRow = isStringNumeric(row) ? Number(row) : 0;
+
+    const numCol = isStringNumeric(col) ? Number(col) : 0;
+
+    $effect(() => {
+        // console.log(`${numRow}x${numCol} = ${num}`);
+        if (fullMatrix.matrix[numRow] !== null) {
+            fullMatrix.matrix[numRow][numCol] = num;
+        }
+    })
+
+    let total = $derived(
+        (fullMatrix.matrix[numRow][1] + fullMatrix.matrix[numRow][2] + fullMatrix.matrix[numRow][3]) / base
+    )
+
+    //TODO add unit to input (money, time, ...); will probably need a div container to mimic current input, flex row and align
 </script>
-
-<div class="collective">
-    <div class="collective-column">
-        <input id="bud" class="input i-left" type="number" placeholder="huh" bind:value={budget}>
-        <label for="bud">Budget</label>
-    </div>
-
-    <div class="collective-column">
-        <input id="mat" class="input i-center" type="number" placeholder="huh" bind:value={material}>
-        <label for="mat">Material</label>
-    </div>
-
-    <div class="collective-column">
-        <input id="ove" class="input i-right" type="number" placeholder="huh" bind:value={overhead}>
-        <label for="ove">Overhead</label>
-    </div>
-
-</div>
+{#if numCol === 4}
+    <input id={`${ord(numRow, numCol)}`} class="input item" type="number" placeholder="huh" bind:value={total} disabled={numCol === 4}>
+{:else}
+    <input id={`${ord(numRow, numCol)}`} class="input item" type="number" placeholder="huh" bind:value={num}>
+{/if}
 
 <style lang="scss">
 
   $insetBorderColor: #5A7EC7;
   $activeScale: 1.1;
+
+  $inputBackgroundColor: white;
+  $inputFontColor: black;
+  $inputBorderColor: #C4D1EB;
 
   @mixin insetBorder($npx, $color) {
     -webkit-box-shadow: inset 0 0 0 $npx $color;
@@ -50,28 +62,14 @@
     appearance: textfield;
   }
 
-  .collective {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    width: 50%;
-    padding: 5px 10px 5px 10px;
-  }
-
-  .collective-column {
-    display: flex;
-    flex-direction: column-reverse;
-  }
-
   .input {
     font-size: 18px;
     width: 100%;
     padding: 5px 10px 5px 15px;
     outline: none;
-    background: #FFFFFF;
-    color: #000000;
-    border: 0 solid #C4D1EB;
+    background: $inputBackgroundColor;
+    color: $inputFontColor;
+    border: 0 solid $inputBorderColor;
 
     &:focus {
       background: #F2F2F2;
@@ -83,40 +81,4 @@
       font-size: 0.8em;
     }
   }
-
-  .i-left {
-    border-radius: 5px 0 0 5px;
-  }
-
-  .i-right {
-    border-radius: 0 5px 5px 0;
-  }
-
-  .i-center {
-    border-radius: 0;
-    border-right: 1px solid black;
-    border-left: 1px solid black;
-  }
-
-  label {
-    position: relative;
-    font-size: 13px;
-    padding-left: 0.5em;
-    width: 50%;
-  }
-
-  // could use label:has(...) instead if input is within label
-  .input:active + label,
-  .input:focus + label {
-    color: red;
-    font-weight: 700;
-  }
-
-  //.svg_icon {
-  //  position: absolute;
-  //  left: 10px;
-  //  fill: #4660DC;
-  //  width: 18px;
-  //  height: 18px;
-  //}
 </style>

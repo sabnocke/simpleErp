@@ -11,14 +11,17 @@
         {`Active index is: ${Page.current}`}
     </div>
     {#each names as name, idx}
-    <div class="button-base" class:isActive={Page.current === idx}>
-        {name + " " + idx}
-    </div>
+        <div class="button-base" class:isActive={Page.current === idx}>
+            {name + " " + idx}
+        </div>
     {/each}
 </div>
 
 <style lang="scss">
   @use "sass:color";
+
+  $colorAdjustScale: 20%;
+  $baseColor: #ccc;
 
   .button-holder {
     padding-top: 5em;
@@ -34,7 +37,7 @@
   .button-base {
     position: relative;
     z-index: 2;
-    background-color: #cccccc;
+    background-color: $baseColor;
     width: calc(100% - 0.5em);
     height: 5ch;
     display: flex;
@@ -43,7 +46,7 @@
     font-weight: 600;
 
     &:hover {
-        background-color: lighten(#cccccc, 10%);
+      background-color: color.adjust($baseColor, $lightness: $colorAdjustScale);
     }
 
     &:active {
@@ -52,9 +55,10 @@
   }
 
   .isActive {
-    background-color: lighten(#cccccc, 20%);
+    background-color: color.adjust($baseColor, $lightness: $colorAdjustScale);
+
     &:hover {
-      background-color: lighten(#cccccc, 20%) !important;
+      background-color: color.adjust($baseColor, $lightness: $colorAdjustScale) !important;
     }
   }
 
