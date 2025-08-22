@@ -3,7 +3,7 @@
 </script>
 
 <label class="wrapper">
-    <input type="checkbox" class="ui-checkbox" bind:checked={isChecked} />
+    <input type="checkbox" name="checkbox" class="ui-checkbox" bind:checked={isChecked} />
 </label>
 
 

@@ -10,9 +10,10 @@
 
 <style lang="scss">
     #nav-wrapper {
-      width: 25%;
+      //width: 25%;
       height: 100%;
       background-color: #1E1E1E;
       position: relative;
+      flex: 1;
     }
 </style>

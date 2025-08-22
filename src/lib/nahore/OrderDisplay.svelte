@@ -4,19 +4,22 @@
     import {type OrderReturnType, type GenericStore} from "$lib/customTypes.js";
     import Checkbox from "$lib/nahore/Checkbox.svelte";
     import FancyInput from "$lib/nahore/FancyInput.svelte";
-    import {fullMatrix} from "$lib/singletons/inputHandler.svelte";
+    import {fullMatrix, NAME, DONE, SHOW} from "$lib/singletons/inputHandler.svelte";
     import GridCell from "$lib/nahore/GridCell.svelte";
 
     let OrderStore: GenericStore<OrderReturnType> = $state({loading: true, data: null, error: null});
+    // fullMatrix.reset()
 
     getOrders().then(data => {
         OrderStore = {loading: false, data: data, error: null};
         for (const item of data) {
-            fullMatrix.matrix[fullMatrix.rows++] = [item.name, 0, 0, 0, 0, false]
+            fullMatrix.addLine(item.name, 0, 0, 0, 0, false, true)
         }
     }).catch(error => {
         OrderStore = {loading: false, data: null, error: error};
     })
+
+    $inspect(fullMatrix)
 
     const headerData = [
         "HeaderName",
@@ -45,23 +48,25 @@
             <div class="row-header">
                 {#each headerData as header}
                     <GridCell type={1}>
-                        <span class="header-common">{header}</span>
+                        <span>{header}</span>
                     </GridCell>
                 {/each}
             </div>
 
-            {#each OrderStore.data as {name}, idx}
-                <div class="inner-container">
-                    <GridCell>
-                        <span class="named">{name}</span>
-                    </GridCell>
-                    {#each [1,2,3,4] as n}
-                        {@render Cell(idx, n)}
-                    {/each}
-                    <GridCell>
-                        <Checkbox/>
-                    </GridCell>
-                </div>
+            {#each fullMatrix.matrix as {name, done, show}, idx}
+                {#if !done && show}
+                    <div class="inner-container">
+                        <GridCell>
+                            <span class="named">{name}</span>
+                        </GridCell>
+                        {#each [1,2,3,4] as n}
+                            {@render Cell(idx, n)}
+                        {/each}
+                        <GridCell>
+                            <Checkbox/>
+                        </GridCell>
+                    </div>
+                {/if}
             {/each}
         </div>
     {/if}
@@ -77,7 +82,7 @@
   .order-holder {
     position: relative;
     padding-top: 1em;
-    width: 100vw;
+    //width: 100vw;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -86,13 +91,9 @@
     height: 100%;
     overflow-y: auto;
     min-width: 200px;
-    flex: 1 0 500px;
+    flex: 6;
   }
-
-  .header-common {
-    padding-left: 0;
-  }
-
+  
   .outer-container {
     display: flex;
     flex-direction: column;

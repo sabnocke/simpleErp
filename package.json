@@ -32,6 +32,7 @@
     "svelte-preprocess"
   ],
   "dependencies": {
+    "fuse.js": "^7.1.0",
     "typescript-nullable": "^0.6.0"
   }
 }

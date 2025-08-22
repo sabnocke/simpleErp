@@ -10,26 +10,39 @@
     let ord = (x: number , y: number) => 0.5 * (x + y) * (x + y + 1) + y
 
     let num = $state(0);
+    // $inspect(`1: ${row}x${col} = ${num}`);
 
     let numRow = isStringNumeric(row) ? Number(row) : 0;
 
     const numCol = isStringNumeric(col) ? Number(col) : 0;
 
     $effect(() => {
-        // console.log(`${numRow}x${numCol} = ${num}`);
-        if (fullMatrix.matrix[numRow] !== null) {
-            fullMatrix.matrix[numRow][numCol] = num;
-        }
+        // console.log(`2: ${numRow}x${numCol} = ${num}`);
+        if (fullMatrix.matrix[numRow] === null)
+            return;
+
+        if (numCol === 1)
+            fullMatrix.matrix[numRow].budget = num;
+        else if (numCol === 2)
+            fullMatrix.matrix[numRow].material = num;
+        else if (numCol === 3)
+            fullMatrix.matrix[numRow].overhead = num;
+
     })
 
+    // let total = $derived(
+    //     (fullMatrix.matrix[numRow][1] + fullMatrix.matrix[numRow][2] + fullMatrix.matrix[numRow][3]) / base
+    // )
     let total = $derived(
-        (fullMatrix.matrix[numRow][1] + fullMatrix.matrix[numRow][2] + fullMatrix.matrix[numRow][3]) / base
+        (fullMatrix.matrix[numRow].budget + fullMatrix.matrix[numRow].material + fullMatrix.matrix[numRow].overhead) / base
     )
+
+    let choice = () => numCol === 4 ? total : num;
 
     //TODO add unit to input (money, time, ...); will probably need a div container to mimic current input, flex row and align
 </script>
 {#if numCol === 4}
-    <input id={`${ord(numRow, numCol)}`} class="input item" type="number" placeholder="huh" bind:value={total} disabled={numCol === 4}>
+    <input id={`${ord(numRow, numCol)}`} class="input item" type="number" placeholder="huh" bind:value={total} disabled>
 {:else}
     <input id={`${ord(numRow, numCol)}`} class="input item" type="number" placeholder="huh" bind:value={num}>
 {/if}

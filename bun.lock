@@ -4,22 +4,23 @@
     "": {
       "name": "simpleErp",
       "dependencies": {
+        "fuse.js": "^7.1.0",
         "typescript-nullable": "^0.6.0",
       },
       "devDependencies": {
-        "@fontsource/fira-mono": "^5.0.0",
-        "@neoconfetti/svelte": "^2.0.0",
-        "@sveltejs/adapter-auto": "^6.0.0",
-        "@sveltejs/kit": "^2.16.0",
-        "@sveltejs/vite-plugin-svelte": "^5.0.0",
-        "@tailwindcss/vite": "^4.0.0",
-        "sass": "^1.89.2",
-        "svelte": "^5.25.0",
-        "svelte-check": "^4.0.0",
+        "@fontsource/fira-mono": "^5.2.6",
+        "@neoconfetti/svelte": "^2.2.2",
+        "@sveltejs/adapter-auto": "^6.1.0",
+        "@sveltejs/kit": "^2.29.1",
+        "@sveltejs/vite-plugin-svelte": "^5.1.1",
+        "@tailwindcss/vite": "^4.1.11",
+        "sass": "^1.90.0",
+        "svelte": "^5.38.1",
+        "svelte-check": "^4.3.1",
         "svelte-preprocess": "^6.0.3",
-        "tailwindcss": "^4.0.0",
-        "typescript": "^5.0.0",
-        "vite": "^6.2.6",
+        "tailwindcss": "^4.1.11",
+        "typescript": "^5.9.2",
+        "vite": "^6.3.5",
       },
     },
   },
@@ -252,6 +253,8 @@
     "fill-range": ["fill-range@7.1.1", "", { "dependencies": { "to-regex-range": "^5.0.1" } }, "sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg=="],
 
     "fsevents": ["fsevents@2.3.3", "", { "os": "darwin" }, "sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw=="],
+
+    "fuse.js": ["fuse.js@7.1.0", "", {}, "sha512-trLf4SzuuUxfusZADLINj+dE8clK1frKdmqiJNb1Es75fmI5oY6X2mxLVUciLLjxqw/xr72Dhy+lER6dGd02FQ=="],
 
     "graceful-fs": ["graceful-fs@4.2.11", "", {}, "sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ=="],
 
