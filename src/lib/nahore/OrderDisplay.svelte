@@ -1,122 +1,115 @@
 <script lang="ts">
-    //@ts-nocheck
-    import {getOrders} from "../database/loadOrders.js"
-    import {type OrderReturnType, type GenericStore} from "$lib/customTypes.js";
-    import Checkbox from "$lib/nahore/Checkbox.svelte";
-    import FancyInput from "$lib/nahore/FancyInput.svelte";
-    import {fullMatrix, NAME, DONE, SHOW} from "$lib/singletons/inputHandler.svelte";
-    import GridCell from "$lib/nahore/GridCell.svelte";
+  //@ts-nocheck
+  import {getOrders} from "../database/loadOrders.js"
+  import {type OrderReturnType, type GenericStore} from "$lib/customTypes.js";
+  import Checkbox from "$lib/nahore/Checkbox.svelte";
+  import FancyInput from "$lib/nahore/FancyInput.svelte";
+  import {fullMatrix} from "$lib/singletons/inputHandler.svelte";
 
-    let OrderStore: GenericStore<OrderReturnType> = $state({loading: true, data: null, error: null});
-    // fullMatrix.reset()
+  let OrderStore: GenericStore<OrderReturnType> = $state({loading: true, data: null, error: null});
 
-    getOrders().then(data => {
-        OrderStore = {loading: false, data: data, error: null};
-        for (const item of data) {
-            fullMatrix.addLine(item.name, 0, 0, 0, 0, false, true)
-        }
-    }).catch(error => {
-        OrderStore = {loading: false, data: null, error: error};
-    })
+  getOrders().then(data => {
+    OrderStore = {loading: false, data: data, error: null};
+    for (const item of data) {
+      fullMatrix.addLine(item.name, 0, 0, 0, 0, false, true)
+    }
+  }).catch(error => {
+    OrderStore = {loading: false, data: null, error: error};
+  })
 
-    $inspect(fullMatrix)
+  $inspect(fullMatrix)
 
-    const headerData = [
-        "HeaderName",
-        "HeaderBudget",
-        "HeaderMaterial",
-        "HeaderOverhead",
-        "HeaderHours",
-        "Done"
-    ]
+  const headerData = [
+    "HeaderName",
+    "HeaderBudget",
+    "HeaderMaterial",
+    "HeaderOverhead",
+    "HeaderHours",
+    "Done"
+  ]
+
+  //TODO make proper loading component
+  //TODO make proper error component
 </script>
 
 <div class="order-holder">
-    {#snippet Cell(idx, N)}
-        <GridCell>
-            <FancyInput row={idx} col={N}/>
-        </GridCell>
-    {/snippet}
+  {#snippet Cell(idx, N)}
+    <div class="outer-application">
+      <FancyInput row={idx} col={N}/>
+    </div>
+  {/snippet}
 
 
-    {#if OrderStore.loading}
-        <span> loading </span>
-    {:else if OrderStore.error}
-        <span> error </span>
-    {:else if OrderStore.data !== null}
-        <div class="outer-container">
-            <div class="row-header">
-                {#each headerData as header}
-                    <GridCell type={1}>
-                        <span>{header}</span>
-                    </GridCell>
-                {/each}
-            </div>
-
-            {#each fullMatrix.matrix as {name, done, show}, idx}
-                {#if !done && show}
-                    <div class="inner-container">
-                        <GridCell>
-                            <span class="named">{name}</span>
-                        </GridCell>
-                        {#each [1,2,3,4] as n}
-                            {@render Cell(idx, n)}
-                        {/each}
-                        <GridCell>
-                            <Checkbox/>
-                        </GridCell>
-                    </div>
-                {/if}
-            {/each}
-        </div>
-    {/if}
+  {#if OrderStore.loading}
+    <span> loading </span>
+  {:else if OrderStore.error}
+    <span> error </span>
+  {:else if OrderStore.data !== null}
+    <div class="dynamic-grid">
+      {#each headerData as header}
+        <div class="grid-header">{header}</div>
+      {/each}
+      {#each fullMatrix.matrix as {name, done, show}, idx}
+        {#if !done && show}
+          <div class="grid-item">{name}</div>
+          {#each [1,2,3,4] as n}
+            {@render Cell(idx, n)}
+          {/each}
+          <Checkbox/>
+        {/if}
+      {/each}
+    </div>
+  {/if}
 </div>
 
 
 <style lang="scss">
 
-  $sideOffset: 1.5em;
-  $headerBackground: black;
-  $headerFontColor: white;
+  $headerBackground: #1e1e1e;
+  $rowBackground: #f0f0f0;
 
   .order-holder {
     position: relative;
-    padding-top: 1em;
-    //width: 100vw;
     display: flex;
     flex-direction: column;
     align-items: center;
     flex-wrap: nowrap;
     gap: 0.5em;
-    height: 100%;
     overflow-y: auto;
     min-width: 200px;
     flex: 6;
   }
-  
-  .outer-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5em;
-    align-items: center;
+
+  .dynamic-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 15%);
+    justify-content: center;
+    grid-auto-rows: 50px; //maybe em?
+    row-gap: 0.6em;
+    width: 85%;
   }
 
-  .row-header {
-    display: flex;
-    width: calc(100% - $sideOffset);
+  .grid-header {
     position: sticky;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     top: 0;
-    background: $headerBackground;
-    color: $headerFontColor;
+    background-color: $headerBackground;
+    color: white;
     z-index: 10;
   }
 
-  .inner-container {
+  .grid-item {
     display: flex;
-    flex-direction: row;
-    padding: 0.25em 0.25em 0.25em 0.75em;
-    background: #ccc;
+    justify-content: center;
     align-items: center;
-    width: calc(100% - $sideOffset);
+    background-color: $rowBackground;
   }
+
+  .outer-application:nth-child(n) {
+    display: flex;
+    background-color: $rowBackground;
+  }
+
 </style>

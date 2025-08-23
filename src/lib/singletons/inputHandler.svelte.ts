@@ -1,6 +1,5 @@
 import Fuse from "fuse.js";
 
-
 export const fields = $state([
     {cName: "bud", label: "Budget"},
     {cName: "mat", label: "Material"},
@@ -59,21 +58,27 @@ class FullMatrix {
         return result;
     }
 
-    public updateVisibility(idx: number, newValue: boolean = false): Row {
-        this.matrix[idx].show = newValue;
-        return this.matrix[idx];
-    }
-    public updateVisibilities(idxs: number[], newValue: boolean = false) {
-        for (const idx in idxs) {
-            this.matrix[idx].show = newValue;
-        }
-        return this;
-    }
-    public resetVisibility() {
-        for (let line of this.matrix) {
-            line.show = true;
-        }
-    }
+    // public updateVisibility(idx: number, newValue: boolean = false): Row {
+    //     this.matrix[idx].show = newValue;
+    //     return this.matrix[idx];
+    // }
+    // public updateVisibilities(idxs: number[], newValue: boolean = false) {
+    //     for (const idx in idxs) {
+    //         this.matrix[idx].show = newValue;
+    //     }
+    //     return this;
+    // }
+    // public resetVisibility() {
+    //     for (let line of this.matrix) {
+    //         line.show = true;
+    //     }
+    // }
+    //
+    // private containsWeekend(from: Date, to: Date): boolean {
+    //
+    // }
+
+    public distributeOverDays(ignoreWeekends: boolean = true, ignoreVisibility: boolean = false, dayLength: number = 8) {}
 
     public fuzzySearch() {
         if (!this.query) {

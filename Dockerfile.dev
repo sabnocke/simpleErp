@@ -1,0 +1,28 @@
+FROM oven/bun as base
+LABEL authors="Michal"
+
+WORKDIR /usr/src/app
+
+
+FROM base as install
+RUN mkdir -p /temp/dev
+RUN mkdir -p /usr/src/app/node_modules/.vite
+COPY --chown=bun:bun package.json bun.lock /temp/dev/
+RUN cd /temp/dev && bun install --no-optional --frozen-lockfile
+
+FROM base as predevelopment
+COPY --chown=bun:bun --from=install /temp/dev/node_modules node_modules
+RUN bun add -D @rollup/rollup-linux-arm64-gnu
+COPY --chown=bun:bun . .
+
+FROM base as development
+
+COPY --chown=bun:bun --from=install /temp/dev/node_modules /usr/src/app/node_modules
+COPY --chown=bun:bun --from=predevelopment /usr/src/app/package.json .
+
+USER bun
+# Expose port 3000 for the SvelteKit app and 24678 for Vite's HMR
+EXPOSE 3000/tcp
+EXPOSE 24678/tcp
+
+CMD ["bun", "run", "dev"]

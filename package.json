@@ -1,10 +1,10 @@
 {
-  "name": "simpleErp",
+  "name": "simple_erp",
   "private": true,
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
+    "dev": "bunx --bun vite dev --port 3000 --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview",
     "prepare": "svelte-kit sync || echo ''",
@@ -15,14 +15,17 @@
     "@fontsource/fira-mono": "^5.2.6",
     "@neoconfetti/svelte": "^2.2.2",
     "@sveltejs/adapter-auto": "^6.1.0",
-    "@sveltejs/kit": "^2.29.1",
+    "@sveltejs/kit": "^2.36.1",
     "@sveltejs/vite-plugin-svelte": "^5.1.1",
-    "@tailwindcss/vite": "^4.1.11",
+    "@types/bun": "^1.2.20",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
     "sass": "^1.90.0",
-    "svelte": "^5.38.1",
+    "svelte": "^5.38.2",
+    "svelte-adapter-bun": "^0.5.2",
     "svelte-check": "^4.3.1",
     "svelte-preprocess": "^6.0.3",
-    "tailwindcss": "^4.1.11",
+    "tailwindcss": "^4.1.12",
     "typescript": "^5.9.2",
     "vite": "^6.3.5"
   },
@@ -32,6 +35,8 @@
     "svelte-preprocess"
   ],
   "dependencies": {
+    "dayjs": "^1.11.13",
+    "dayjs-business-days": "^1.0.4",
     "fuse.js": "^7.1.0",
     "typescript-nullable": "^0.6.0"
   }

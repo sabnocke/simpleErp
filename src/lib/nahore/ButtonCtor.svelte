@@ -1,5 +1,4 @@
 <script lang="ts">
-    import Button from "$lib/nahore/Button.svelte";
     import {Page} from "$lib/singletons/pageSelect.svelte";
 
     let names = ["abcd", "ahoj"]

@@ -1,57 +1,51 @@
 <script lang="ts">
-    import {fullMatrix} from "$lib/singletons/inputHandler.svelte";
 
-    let {row, col} = $props()
+  // A lot of "Trust me I'm an engineer" here...
 
-    let base = 100;
+  import {fullMatrix} from "$lib/singletons/inputHandler.svelte";
 
-    let isStringNumeric = (value: string) => !isNaN(Number(value))
+  let {row, col} = $props()
 
-    let ord = (x: number , y: number) => 0.5 * (x + y) * (x + y + 1) + y
+  let base = 100;
 
-    let num = $state(0);
-    // $inspect(`1: ${row}x${col} = ${num}`);
+  let isStringNumeric = (value: string) => !isNaN(Number(value))
 
-    let numRow = isStringNumeric(row) ? Number(row) : 0;
+  let ord = (x: number , y: number) => 0.5 * (x + y) * (x + y + 1) + y
 
-    const numCol = isStringNumeric(col) ? Number(col) : 0;
+  let num = $state(0);
 
-    $effect(() => {
-        // console.log(`2: ${numRow}x${numCol} = ${num}`);
-        if (fullMatrix.matrix[numRow] === null)
-            return;
+  let numRow = isStringNumeric(row) ? Number(row) : 0;
 
-        if (numCol === 1)
-            fullMatrix.matrix[numRow].budget = num;
-        else if (numCol === 2)
-            fullMatrix.matrix[numRow].material = num;
-        else if (numCol === 3)
-            fullMatrix.matrix[numRow].overhead = num;
+  const numCol = isStringNumeric(col) ? Number(col) : 0;
 
-    })
+  $effect(() => {
+    if (fullMatrix.matrix[numRow] === null)
+      return;
 
-    // let total = $derived(
-    //     (fullMatrix.matrix[numRow][1] + fullMatrix.matrix[numRow][2] + fullMatrix.matrix[numRow][3]) / base
-    // )
-    let total = $derived(
-        (fullMatrix.matrix[numRow].budget + fullMatrix.matrix[numRow].material + fullMatrix.matrix[numRow].overhead) / base
-    )
+    if (numCol === 1)
+      fullMatrix.matrix[numRow]!.budget = num;
+    else if (numCol === 2)
+      fullMatrix.matrix[numRow]!.material = num;
+    else if (numCol === 3)
+      fullMatrix.matrix[numRow]!.overhead = num;
 
-    let choice = () => numCol === 4 ? total : num;
+  })
 
-    //TODO add unit to input (money, time, ...); will probably need a div container to mimic current input, flex row and align
+  let total = $derived(
+      (fullMatrix.matrix[numRow]!.budget + fullMatrix.matrix[numRow]!.material + fullMatrix.matrix[numRow]!.overhead) / base
+  )
+
+  //TODO add unit to input (money, time, ...); will probably need a div container to mimic current input, flex row and align
 </script>
 {#if numCol === 4}
-    <input id={`${ord(numRow, numCol)}`} class="input item" type="number" placeholder="huh" bind:value={total} disabled>
+  <input id={`${ord(numRow, numCol)}`} class="input item" type="number" placeholder="huh" bind:value={total} disabled>
 {:else}
-    <input id={`${ord(numRow, numCol)}`} class="input item" type="number" placeholder="huh" bind:value={num}>
+  <input id={`${ord(numRow, numCol)}`} class="input item" type="number" placeholder="huh" bind:value={num}>
 {/if}
 
 <style lang="scss">
 
   $insetBorderColor: #5A7EC7;
-  $activeScale: 1.1;
-
   $inputBackgroundColor: white;
   $inputFontColor: black;
   $inputBorderColor: #C4D1EB;
@@ -77,12 +71,14 @@
 
   .input {
     font-size: 18px;
-    width: 100%;
     padding: 5px 10px 5px 15px;
     outline: none;
     background: $inputBackgroundColor;
     color: $inputFontColor;
     border: 0 solid $inputBorderColor;
+
+    width: -webkit-fill-available; // might not work on firefox
+    height: -webkit-fill-available;
 
     &:focus {
       background: #F2F2F2;
