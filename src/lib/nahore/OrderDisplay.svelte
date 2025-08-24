@@ -13,11 +13,18 @@
     for (const item of data) {
       fullMatrix.addLine(item.name, 0, 0, 0, 0, false, true)
     }
+    // fullMatrix.matrix[0].done = true;
+
   }).catch(error => {
     OrderStore = {loading: false, data: null, error: error};
+    console.error(error);
   })
 
-  $inspect(fullMatrix)
+
+
+  // let toDisplay = $derived(
+  //     fullMatrix.seekArchived ? fullMatrix.getArchivedRows() : fullMatrix.getActiveRows()
+  // )
 
   const headerData = [
     "HeaderName",
@@ -30,6 +37,7 @@
 
   //TODO make proper loading component
   //TODO make proper error component
+  $inspect(fullMatrix.matrix)
 </script>
 
 <div class="order-holder">
@@ -50,12 +58,12 @@
         <div class="grid-header">{header}</div>
       {/each}
       {#each fullMatrix.matrix as {name, done, show}, idx}
-        {#if !done && show}
+        {#if fullMatrix.selector(done, show)}
           <div class="grid-item">{name}</div>
           {#each [1,2,3,4] as n}
             {@render Cell(idx, n)}
           {/each}
-          <Checkbox/>
+          <Checkbox idx={idx} bind:checked={fullMatrix.matrix[idx].done}/>
         {/if}
       {/each}
     </div>

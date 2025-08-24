@@ -1,5 +1,7 @@
 <script lang="ts">
-    interface Props {
+  import {fullMatrix} from "$lib/singletons/inputHandler.svelte.ts";
+
+  interface Props {
         count: number;
         active: number;
         names: Array<string>;
@@ -10,6 +12,10 @@
     function clicked(which: number) {
         whoClicked = whoClicked === which ? -1 : which;
     }
+
+    $effect(() => {
+      fullMatrix.seekArchived = whoClicked === 1;
+    })
 
 </script>
 

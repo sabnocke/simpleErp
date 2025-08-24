@@ -1,21 +1,30 @@
 <script lang="ts">
-  let isChecked = $state(false);
-  //TODO remake the css to use scss
+  import {fullMatrix} from "$lib/singletons/inputHandler.svelte.ts";
+
+  let {idx, checked} = $props()
+
+  $effect(() => {
+    console.log(`idx: ${idx}`);
+    // fullMatrix.matrix[idx]!.done = checked;
+    // if (checked || !checked) {
+    //   fullMatrix.moveById(idx);
+    // }
+
+
+  })
 </script>
 
 <label class="wrapper">
-  <input type="checkbox" name="checkbox" class="ui-checkbox" bind:checked={isChecked} />
+  <input type="checkbox" name="checkbox" class="ui-checkbox" bind:checked={checked} onchange={() => fullMatrix.moveById(idx)} />
 </label>
 
 
 <style lang="scss">
-  :root {
-    --primary-color: #1677FF;
-    --secondary-color: #FFFFFF;
-    --border-color: #D9D9D9;
-    --checkbox-size: 22px;
-  }
   $background: #f0f0f0;
+  $primary-color: #1677FF;
+  $secondary-color: #FFFFFF;
+  $border-color: #D9D9D9;
+  $checkbox-size: 22px;
 
   .wrapper {
     display: flex;
@@ -32,11 +41,11 @@
     appearance: none;
     margin: 0;
 
-    width: var(--checkbox-size);
-    height: var(--checkbox-size);
-    border: 1px solid var(--border-color);
+    width: $checkbox-size;
+    height: $checkbox-size;
+    border: 1px solid $border-color;
     border-radius: 5px;
-    background-color: var(--secondary-color);
+    background-color: $secondary-color;
 
     position: relative;
     display: grid;
@@ -48,7 +57,7 @@
       content: "";
       width: 5px;
       height: 10px;
-      border: solid var(--secondary-color);
+      border: solid $secondary-color;
       border-width: 0 2px 2px 0;
 
       opacity: 0;
@@ -57,12 +66,12 @@
     }
 
     &:not(:checked):hover {
-      border-color: var(--primary-color);
+      border-color: $primary-color;
     }
 
     &:checked {
-      background-color: var(--primary-color);
-      border-color: var(--primary-color);
+      background-color: $primary-color;
+      border-color: $primary-color;
     }
 
     &:checked::before {

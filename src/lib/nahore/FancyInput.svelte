@@ -38,7 +38,7 @@
   //TODO add unit to input (money, time, ...); will probably need a div container to mimic current input, flex row and align
 </script>
 {#if numCol === 4}
-  <input id={`${ord(numRow, numCol)}`} class="input item" type="number" placeholder="huh" bind:value={total} disabled>
+  <input id={`${ord(numRow, numCol)}`} class="input item" type="number" placeholder="huh" bind:value={total} disabled={numCol === 4}>
 {:else}
   <input id={`${ord(numRow, numCol)}`} class="input item" type="number" placeholder="huh" bind:value={num}>
 {/if}

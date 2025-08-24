@@ -27,9 +27,12 @@ export const SHOW = 6;
 
 class FullMatrix {
     public rowCount: number = 0;
-    public matrix: Row[] = $state([])
+    public matrix: Row[] = $state([]);
+    public archive: Row[] = $state([]);
     public nameLookup: Map<string, number> = new Map<string, number>();
-    public query: string = $state("")
+    public archiveLookup: Map<string, number> = new Map<string, number>();
+    public query: string = $state("");
+    public seekArchived = $state(false);
 
     public reset(): this {
         this.matrix = [];
@@ -37,13 +40,86 @@ class FullMatrix {
     }
 
     constructor() {
-        this.reset()
+        this.reset();
+    }
+
+    public selector(done: boolean, show: boolean) {
+        if (this.seekArchived) {
+            return done && show;
+        }
+        return !done && show;
+    }
+
+    public *getActiveRows() {
+        for (let row of this.matrix) {
+            if (row.show && !row.done) {
+                yield row;
+            }
+        }
+    }
+
+    public *getArchivedRows() {
+        for (let row of this.matrix) {
+            if (row.show && row.done) {
+                yield row;
+            }
+        }
+    }
+
+    public moveById(id: number) {
+        let item = this.matrix.splice(id, 1)[0];
+        let itemAlt = this.archive.splice(id, 1)[0];
+
+        if (item) {
+            this.archive.push(item);
+            return item;
+        } else if (itemAlt) {
+            this.matrix.push(itemAlt);
+            return itemAlt;
+        }
+    }
+
+    #detectNaN(n: number): number {
+        return Number.isNaN(n) ? 0 : 1;
+    }
+
+    public moveByName(name: string) {
+        const index = this.nameLookup.get(name) ?? NaN;
+        const indexAlt = this.archiveLookup.get(name) ?? NaN;
+        let item =  this.matrix.splice(index, this.#detectNaN(index))[0];
+        let itemAlt = this.archive.splice(indexAlt, this.#detectNaN(indexAlt))[0];
+
+        if (item) {
+            this.archive.push(item);
+            return item;
+        } else if (itemAlt) {
+            this.matrix.push(itemAlt);
+            return itemAlt;
+        }
+    }
+
+    #addArchiveLine(row: Row) {
+        let line = $state<Row>(row);
+        this.archive.push(line);
+        this.archiveLookup.set(line.name, this.archive.indexOf(line));
+    }
+
+    public addArchiveLine(name: string,
+                          budget: number = 0,
+                          material: number = 0,
+                          overhead: number = 0,
+                          hours: number = 0.0,
+                          done: boolean = false,
+                          show: boolean = true) {
+        let line = $state<Row>({name, budget, material, overhead, done, show});
+        this.archive.push(line);
+        this.archiveLookup.set(name, this.archive.indexOf(line));
     }
 
     public addLine(name: string, budget: number = 0, material: number = 0, overhead: number = 0, hours: number = 0.0, done: boolean = false, show: boolean = true) {
         let line = $state<Row>({name, budget, material, overhead, done, show});
         this.matrix.push(line);
-        this.nameLookup.set(name, this.rowCount);
+        this.nameLookup.set(name, this.matrix.indexOf(line));
     }
 
     public seekName(name: string = "__default__"): number {
