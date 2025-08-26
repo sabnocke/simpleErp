@@ -1,20 +1,18 @@
 <script lang="ts">
   //@ts-nocheck
-  import {getOrders} from "../database/loadOrders.js"
+  import {getOrders, generateRandomEntries} from "../database/loadOrders.js"
   import {type OrderReturnType, type GenericStore} from "$lib/customTypes.js";
   import Checkbox from "$lib/nahore/Checkbox.svelte";
   import FancyInput from "$lib/nahore/FancyInput.svelte";
-  import {fullMatrix} from "$lib/singletons/inputHandler.svelte";
+  import {fullMatrix, Types} from "$lib/singletons/inputHandler.svelte";
 
   let OrderStore: GenericStore<OrderReturnType> = $state({loading: true, data: null, error: null});
 
-  getOrders().then(data => {
+  generateRandomEntries(10).then(data => {
     OrderStore = {loading: false, data: data, error: null};
     for (const item of data) {
       fullMatrix.addLine(item.name, 0, 0, 0, 0, false, true)
     }
-    // fullMatrix.matrix[0].done = true;
-
   }).catch(error => {
     OrderStore = {loading: false, data: null, error: error};
     console.error(error);
@@ -22,9 +20,9 @@
 
 
 
-  // let toDisplay = $derived(
-  //     fullMatrix.seekArchived ? fullMatrix.getArchivedRows() : fullMatrix.getActiveRows()
-  // )
+  let toDisplay = $derived(
+      fullMatrix.matrix.filter(item => fullMatrix.selector(item.done, item.show))
+  )
 
   const headerData = [
     "HeaderName",
@@ -43,7 +41,7 @@
 <div class="order-holder">
   {#snippet Cell(idx, N)}
     <div class="outer-application">
-      <FancyInput row={idx} col={N}/>
+
     </div>
   {/snippet}
 
@@ -57,14 +55,13 @@
       {#each headerData as header}
         <div class="grid-header">{header}</div>
       {/each}
-      {#each fullMatrix.matrix as {name, done, show}, idx}
-        {#if fullMatrix.selector(done, show)}
-          <div class="grid-item">{name}</div>
-          {#each [1,2,3,4] as n}
-            {@render Cell(idx, n)}
-          {/each}
-          <Checkbox idx={idx} bind:checked={fullMatrix.matrix[idx].done}/>
-        {/if}
+      {#each toDisplay as {name, done, show, hash}, idx (name)}
+        <div class="grid-item">{name}</div>
+        <FancyInput row={idx} col={0} name={name} type={Types.Budget}/>
+        <FancyInput row={idx} col={0} name={name} type={Types.Material}/>
+        <FancyInput row={idx} col={0} name={name} type={Types.Overhead}/>
+        <FancyInput row={idx} col={0} name={name} type={Types.Hours}/>
+        <Checkbox idx={idx} hash={hash} bind:checked={toDisplay[idx].done}/>
       {/each}
     </div>
   {/if}

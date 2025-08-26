@@ -2,9 +2,16 @@
 
   // A lot of "Trust me I'm an engineer" here...
 
-  import {fullMatrix} from "$lib/singletons/inputHandler.svelte";
+  import {fullMatrix, Types} from "$lib/singletons/inputHandler.svelte";
 
-  let {row, col} = $props()
+  interface IProps {
+    row: number;
+    col: number;
+    name: string;
+    type: Types;
+  }
+
+  let {row, col, name, type}: IProps = $props()
 
   let base = 100;
 
@@ -13,35 +20,49 @@
   let ord = (x: number , y: number) => 0.5 * (x + y) * (x + y + 1) + y
 
   let num = $state(0);
+  let item = fullMatrix.nameLookup.get(name);
 
-  let numRow = isStringNumeric(row) ? Number(row) : 0;
 
-  const numCol = isStringNumeric(col) ? Number(col) : 0;
+  // let numRow = isStringNumeric(row) ? Number(row) : 0;
+  //
+  // const numCol = isStringNumeric(col) ? Number(col) : 0;
 
   $effect(() => {
-    if (fullMatrix.matrix[numRow] === null)
-      return;
+    // if (fullMatrix.matrix[numRow] === null)
+    //   return;
 
-    if (numCol === 1)
-      fullMatrix.matrix[numRow]!.budget = num;
-    else if (numCol === 2)
-      fullMatrix.matrix[numRow]!.material = num;
-    else if (numCol === 3)
-      fullMatrix.matrix[numRow]!.overhead = num;
+    if (!item) {
+      return;
+    }
+
+    switch (type) {
+      case Types.Budget:
+        item.budget = num;
+        break;
+      case Types.Material:
+        item.material = num;
+        break;
+      case Types.Overhead:
+        item.overhead = num;
+        break;
+    }
 
   })
 
   let total = $derived(
-      (fullMatrix.matrix[numRow]!.budget + fullMatrix.matrix[numRow]!.material + fullMatrix.matrix[numRow]!.overhead) / base
+      ((item?.budget ?? 0) + (item?.material ?? 0) + (item?.overhead ?? 0)) / base
   )
 
   //TODO add unit to input (money, time, ...); will probably need a div container to mimic current input, flex row and align
 </script>
-{#if numCol === 4}
-  <input id={`${ord(numRow, numCol)}`} class="input item" type="number" placeholder="huh" bind:value={total} disabled={numCol === 4}>
+
+<!--<input id={name} class="input item" type="number" placeholder="huh" bind:value={total} disabled={type === Types.Hours}>-->
+{#if type === Types.Hours}
+  <input id={name} class="input item" type="number" placeholder="huh" bind:value={total} disabled={type === Types.Hours}>
 {:else}
-  <input id={`${ord(numRow, numCol)}`} class="input item" type="number" placeholder="huh" bind:value={num}>
+  <input id={name} class="input item" type="number" placeholder="huh" bind:value={num}>
 {/if}
+
 
 <style lang="scss">
 
@@ -49,11 +70,17 @@
   $inputBackgroundColor: white;
   $inputFontColor: black;
   $inputBorderColor: #C4D1EB;
+  $rowBackground: #f0f0f0;
 
   @mixin insetBorder($npx, $color) {
     -webkit-box-shadow: inset 0 0 0 $npx $color;
     -moz-box-shadow: inset 0 0 0 $npx $color;
     box-shadow: inset 0 0 0 $npx $color;
+  }
+
+  .item {
+    display: flex;
+    background-color: $rowBackground;
   }
 
 

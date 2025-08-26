@@ -1,7 +1,13 @@
 <script lang="ts">
   import {fullMatrix} from "$lib/singletons/inputHandler.svelte.ts";
 
-  let {idx, checked} = $props()
+  interface IProps {
+    idx: number
+    hash: number
+    checked: boolean
+  }
+
+  let {idx, hash, checked}: IProps = $props()
 
   $effect(() => {
     console.log(`idx: ${idx}`);
@@ -12,10 +18,15 @@
 
 
   })
+
+  // let move = () => {
+  //   $inspect(fullMatrix.moveById(idx));
+  // }
+
 </script>
 
 <label class="wrapper">
-  <input type="checkbox" name="checkbox" class="ui-checkbox" bind:checked={checked} onchange={() => fullMatrix.moveById(idx)} />
+  <input type="checkbox" name="checkbox" class="ui-checkbox" bind:checked={checked} onchange={() => fullMatrix.moveByHash(hash)} />
 </label>
 
 
