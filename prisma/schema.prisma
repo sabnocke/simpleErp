@@ -8,15 +8,15 @@ datasource db {
 }
 
 model Orders {
-  id             Int      @id @default(autoincrement())
-  name           String   @db.VarChar(255)
-  budget         Decimal  @db.Decimal(19, 4)
-  material_price Decimal  @db.Decimal(19, 4)
-  overhead       Decimal  @db.Decimal(19, 4)
-  startAt        DateTime @default(now())
-  endAt          DateTime @default(now())
-  done           Boolean  @default(false)
-  work           Work[]
+  id       Int      @id @default(autoincrement())
+  name     String   @db.VarChar(255)
+  budget   Decimal  @db.Decimal(19, 4)
+  material Decimal  @db.Decimal(19, 4)
+  overhead Decimal  @db.Decimal(19, 4)
+  startAt  DateTime @default(now())
+  endAt    DateTime @default(now())
+  done     Boolean  @default(false)
+  work     Work[]
 }
 
 model Employees {
