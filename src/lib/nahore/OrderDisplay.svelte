@@ -1,23 +1,46 @@
 <script lang="ts">
   //@ts-nocheck
-  import {getOrders, generateRandomEntries} from "../database/loadOrders.js"
-  import {type OrderReturnType, type GenericStore} from "$lib/customTypes.js";
+  import {/*getOrders, generateRandomEntries,*/ fetchOrders} from "../database/loadOrders.js"
+  // import {merge} from "$lib/utils.ts";
+  import type {/*OrderReturnType,*/ GenericStore, IDisplay} from "$lib/customTypes.js";
   import Checkbox from "$lib/nahore/Checkbox.svelte";
   import FancyInput from "$lib/nahore/FancyInput.svelte";
   import {fullMatrix, Types} from "$lib/singletons/inputHandler.svelte";
+  // import {fetchOrders} from "$lib/server/orderProvider.ts";
 
-  let OrderStore: GenericStore<OrderReturnType> = $state({loading: true, data: null, error: null});
+  let OrderStore: GenericStore<IDisplay> = $state({loading: true, data: null, error: null});
 
-  generateRandomEntries(10).then(data => {
-    OrderStore = {loading: false, data: data, error: null};
-    for (const item of data) {
-      fullMatrix.addLine(item.name, 0, 0, 0, 0, false, true)
-    }
-  }).catch(error => {
-    OrderStore = {loading: false, data: null, error: error};
-    console.error(error);
+  // generateRandomEntries(10).then(data => {
+  //   OrderStore = {loading: false, data: data, error: null};
+  //   for (const item of data) {
+  //     fullMatrix.addLine(item.name, 0, 0, 0, 0, false, true)
+  //   }
+  // }).catch(error => {
+  //   OrderStore = {loading: false, data: null, error: error};
+  //   console.error(error);
+  // })
+
+  $effect(() => {
+    fetchOrders().then(data => {
+      OrderStore = {loading: false, data: data, error: null}
+      for (const item of data) {
+        fullMatrix.addLine(item.name, item.budget, item.material, item.overhead, 0.0, item.done);
+        //TODO once hours (or seconds) loading is working change it here         ^
+      }
+    }).catch(error => {
+      OrderStore = {loading: false, data: null, error: error};
+      console.error(error);
+    })
   })
 
+  // $effect(async () => {
+  //   try {
+  //     const orders = await fetchOrders()
+  //     console.log(orders)
+  //   } catch (e) {
+  //     console.error(e)
+  //   }
+  // })
 
 
   let toDisplay = $derived(
@@ -39,11 +62,11 @@
 </script>
 
 <div class="order-holder">
-  {#snippet Cell(idx, N)}
-    <div class="outer-application">
+  <!--{#snippet Cell(idx, N)}-->
+  <!--  <div class="outer-application">-->
 
-    </div>
-  {/snippet}
+  <!--  </div>-->
+  <!--{/snippet}-->
 
 
   {#if OrderStore.loading}
@@ -112,9 +135,9 @@
     background-color: $rowBackground;
   }
 
-  .outer-application:nth-child(n) {
-    display: flex;
-    background-color: $rowBackground;
-  }
+  //.outer-application:nth-child(n) {
+  //  display: flex;
+  //  background-color: $rowBackground;
+  //}
 
 </style>

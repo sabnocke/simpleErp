@@ -1,5 +1,7 @@
+import type {AllPosts, IRow, Maybe} from "$lib/customTypes.ts";
+// import dayjs from "dayjs";
 
-//TODO Change the name of this function
+
 export async function getOrders() {
   console.log('Fetching layout from database...');
   await new Promise(resolve => setTimeout(resolve, 1000));
@@ -149,4 +151,57 @@ export async function generateRandomEntries(numEntries = 10) {
   }
 
   return entries;
+}
+
+export async function fetchOrders(archived: boolean = false): Promise<Maybe<AllPosts>> {
+  const params = new URLSearchParams();
+
+  if (archived) {
+    params.set("show", `${archived}`);
+  }
+
+  const url = `/api/orders?${params.toString()}`;
+
+  try {
+    const response = await fetch(url);
+    if (response.ok) {
+      return await response.json() as AllPosts;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  return null;
+}
+
+export async function createOrder(name: string, budget: number, material: number, overhead: number) {
+  let row: IRow = {
+    name: name,
+    budget: budget,
+    material: material,
+    overhead: overhead,
+    startAt: new Date(),
+    endAt: new Date(),  //TODO calculate end date
+    done: false,
+  }
+
+  try {
+    console.log(`Creating order ${name}`);
+    const response = await fetch("/api/orders", {
+      method: "POST",
+      body: JSON.stringify(row)
+    })
+
+    console.log("Response", response)
+    if (response.ok) {
+      return await response.json();
+    } else {
+      console.error("Failed to create order. Server returned:", response.status);
+      return null;
+    }
+  } catch (error) {
+    console.error("Failed to create order due to network error:", error);
+  }
+
+  return null;
 }

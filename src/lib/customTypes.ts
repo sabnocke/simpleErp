@@ -1,3 +1,4 @@
+import {Prisma} from "@prisma/client";
 
 export type GenericStore<StoreType> = {
   loading: boolean,
@@ -29,12 +30,12 @@ export class Order {
   }
 }
 
-export enum Coding {
-  Create,
-  Read,
-  Update,
-  Delete,
-}
+// export enum Coding {
+//   Create,
+//   Read,
+//   Update,
+//   Delete,
+// }
 
 export interface IRow {
   name: string
@@ -57,3 +58,16 @@ export interface IWorker {
   name: string
   active: boolean
 }
+
+export interface IDisplay {
+  id: number
+  name: string
+  budget: number
+  material: number
+  overhead: number
+  seconds: number
+}
+
+export type AllPosts = Prisma.OrdersGetPayload<{}>[]
+
+export type Maybe<T> = T | null

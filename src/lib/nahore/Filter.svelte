@@ -3,13 +3,15 @@
   import {fullMatrix} from "$lib/singletons/inputHandler.svelte";
   import SearchBar from "$lib/nahore/SearchBar.svelte";
   import Switch from "$lib/nahore/Switch.svelte";
+  import NewItem from "$lib/nahore/NewItem.svelte";
 
   let buttonNames = ["First", "Second"];
 </script>
 
 <div class="someNavBar">
   <SearchBar />
-  <Switch count={2} names={buttonNames} active={0}/>
+  <Switch active={false} />
+  <NewItem />
 </div>
 
 
