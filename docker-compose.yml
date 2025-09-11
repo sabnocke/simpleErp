@@ -15,7 +15,7 @@ services:
     ports:
       - "5433:5432"
   frontend:
-    image: frontend-sveltekit
+    image: frontend-sveltekit:latest
     restart: on-failure
     build:
       context: .

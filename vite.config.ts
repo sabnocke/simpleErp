@@ -12,8 +12,9 @@ export default defineConfig({
 		port: 3000,
 		strictPort: true,
 		hmr: {
-			host: "0.0.0.0",
-			protocol: "ws"
+			host: "localhost",
+			protocol: "ws",
+      port: 24678
 		}
 	}
 });
