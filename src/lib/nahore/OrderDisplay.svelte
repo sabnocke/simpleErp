@@ -7,6 +7,7 @@
   import FancyInput from "$lib/nahore/FancyInput.svelte";
   import {fullMatrix, Types} from "$lib/singletons/inputHandler.svelte";
   // import {fetchOrders} from "$lib/server/orderProvider.ts";
+  import { Temporal } from "temporal-polyfill";
 
   let OrderStore: GenericStore<IDisplay> = $state({loading: true, data: null, error: null});
 
@@ -26,6 +27,7 @@
       for (const item of data) {
         fullMatrix.addLine(item.name, item.budget, item.material, item.overhead, 0.0, item.done);
         //TODO once hours (or seconds) loading is working change it here         ^
+        const date = Temporal.ZonedDateTime.from(item.startAt.toTemporalInstant())
       }
     }).catch(error => {
       OrderStore = {loading: false, data: null, error: error};

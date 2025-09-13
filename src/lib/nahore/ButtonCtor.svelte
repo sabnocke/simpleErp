@@ -1,20 +1,27 @@
 <script lang="ts">
-    import {Page} from "$lib/singletons/pageSelect.svelte";
+  import {Page} from "$lib/singletons/pageSelect.svelte";
+  import {redirect} from "@sveltejs/kit";
+  import {goto} from "$app/navigation";
 
-    let names = ["abcd", "ahoj"]
+  interface Props {
+    active: boolean;
+    name: string;
+    target: string;
+  }
+
+  let {active, name, target}: Props = $props();
+
+  function goToPage() {
+    goto(`/nahore/${target}`);
+  }
+
+  // let names = ["abcd", "ahoj"]
 </script>
 
 
-<div class="button-holder">
-    <div class="button-base">
-        {`Active index is: ${Page.current}`}
-    </div>
-    {#each names as name, idx}
-        <div class="button-base" class:isActive={Page.current === idx}>
-            {name + " " + idx}
-        </div>
-    {/each}
-</div>
+<button class="button-base" class:isActive={active} onclick={goToPage}>
+  {name}
+</button>
 
 <style lang="scss">
   @use "sass:color";

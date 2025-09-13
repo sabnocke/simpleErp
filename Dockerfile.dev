@@ -1,30 +1,23 @@
-FROM oven/bun as deps
+FROM oven/bun AS deps
 LABEL authors="Michal"
 
 WORKDIR /usr/src/app
 RUN mkdir -p /usr/src/app/node_modules/.vite
 COPY --chown=bun:bun package.json bun.lock ./
-RUN bun install --no-optional --frozen-lockfile
+RUN bun install
 
-FROM oven/bun as development
+# Install OpenSSL for Prisma and clean up to reduce image size
+RUN apt update -y && apt install -y openssl && rm -rf /var/lib/apt/lists/*
+
+FROM oven/bun AS development
 
 WORKDIR /usr/src/app
 
-# Install OpenSSL for Prisma
-# It's a good practice to clean the cache to reduce image size
-RUN apt update -y && apt install -y openssl && rm -rf /var/lib/apt/lists/*
-
 COPY --chown=bun:bun --from=deps /usr/src/app/node_modules ./node_modules
 COPY --chown=bun:bun --from=deps /usr/src/app/package.json ./package.json
-#RUN bun add -D @rollup/rollup-linux-arm64-gnu
 
 COPY --chown=bun:bun . .
 
-#FROM base as development
-#
-#COPY --chown=bun:bun --from=install /temp/dev/node_modules /usr/src/app/node_modules
-#COPY --chown=bun:bun --from=predevelopment /usr/src/app/package.json .
-RUN ls -a
 RUN bunx prisma generate
 
 USER bun

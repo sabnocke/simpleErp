@@ -1,4 +1,5 @@
-import type {AllPosts, IDisplay} from "$lib/customTypes.ts";
+import type {AllOrders, IDisplay} from "$lib/customTypes.ts";
+import {Temporal} from "temporal-polyfill";
 
 export function* merge<T0, T1>(a: Iterable<T0>, b: Iterable<T1>): Generator<T0 | T1> {
   if (a) {
@@ -12,7 +13,11 @@ export function* merge<T0, T1>(a: Iterable<T0>, b: Iterable<T1>): Generator<T0 |
   }
 }
 
-export function* orderConverter(src: AllPosts): Generator<IDisplay> {
+export function dateToTemporal(date: Date, timezone: string = "Europe/Prague"): Temporal.ZonedDateTime {
+  return date.toTemporalInstant().toZonedDateTimeISO(timezone);
+}
+
+export function* orderConverter(src: AllOrders): Generator<IDisplay> {
   for (const item of src) {
     yield {
       id: item.id,

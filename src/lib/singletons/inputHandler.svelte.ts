@@ -1,4 +1,8 @@
 import Fuse from "fuse.js";
+import type {AllOrders, OneOrder} from "$lib/customTypes.ts";
+import {Temporal} from "temporal-polyfill";
+import {dateToTemporal} from "$lib/utils.ts";
+import {Decimal} from "decimal.js";
 
 
 export const fields = $state([
@@ -16,14 +20,34 @@ export enum Types {
   Hours
 }
 
+//DEPRECATED
 interface Row {
-  name: string
-  budget: number
-  material: number
-  overhead: number
-  done: boolean
-  show: boolean
-  hash: number
+  name: string;
+  budget: number;
+  material: number;
+  overhead: number;
+  startAt: Temporal.ZonedDateTime | null;
+  endAt: Temporal.ZonedDateTime | null;
+  done: boolean;
+  show: boolean;
+  hash: number;
+}
+
+interface Row2 {
+  name: string;
+  budget: Decimal;
+  material: Decimal;
+  overhead: Decimal;
+  startAt: Temporal.ZonedDateTime;
+  endAt: Temporal.ZonedDateTime;
+  done: boolean;
+  show: boolean;
+  hash: number;
+}
+
+interface Result {
+  success: boolean;
+  response: string;
 }
 
 // const ARCHIVE = 0;
@@ -39,10 +63,10 @@ interface Row {
 
 class FullMatrix {
   // public rowCount: number = 0;
-  public matrix: Row[] = $state([]);
+  public matrix: (Row | Row2)[] = $state([]);
   public archive: Row[] = $state([]);
   // private default: Row = {name: "NAME", budget: -1, material:  -1, overhead: -1, done: false, show: false, hash: 5138}
-  public nameLookup: Map<string, Row> = new Map();
+  public nameLookup: Map<string, Row | Row2> = new Map();
   // public archiveLookup: Map<string, number> = new Map();
   public nameUniqueLookup: Set<string> = new Set();
   public query: string = $state("");
@@ -104,14 +128,58 @@ class FullMatrix {
 
   }
 
+  public addLineFromAllPosts(item: OneOrder): Result {
+    if (this.nameUniqueLookup.has(item.name)) {
+      return {
+        success: false,
+        response: `Name collision on key: ${item.name}`
+      }
+    }
+
+    const {name, budget, material, overhead, done, startAt, endAt} = item;
+
+    const hash = this.djb2Hash(item.name);
+    const line = $state<Row2>({
+      name: name,
+      budget: budget,
+      material: material,
+      overhead,
+      startAt: dateToTemporal(startAt),
+      endAt: dateToTemporal(endAt),
+      done,
+      show: true,
+      hash
+    });
+
+    this.matrix.push(line);
+    this.nameUniqueLookup.add(name);
+    this.nameLookup.set(name, line);
+
+    return {
+      success: true,
+      response: "",
+    };
+  }
+
   // TODO change hours to seconds (or delta, if that is more expressive)
+  // a bit outdated
   public addLine(name: string, budget: number = 0, material: number = 0, overhead: number = 0, hours: number = 0.0, done: boolean = false, show: boolean = true) {
     if (this.nameUniqueLookup.has(name)) {
       return [false, `Name collision on key: ${name}`];
     }
 
     const hash = this.djb2Hash(name);
-    let line = $state<Row>({name, budget, material, overhead, done, show, hash});
+    let line = $state<Row>({
+      name,
+      budget,
+      material,
+      overhead,
+      startAt: null,
+      endAt: null,
+      done,
+      show,
+      hash
+    });
     this.matrix.push(line);
     this.nameLookup.set(name, line);
     this.nameUniqueLookup.add(name);
@@ -130,7 +198,7 @@ class FullMatrix {
   // TODO improve searching
   public fuzzySearch() {
     if (!this.query) {
-      this.matrix.forEach((row: Row) => row.show = true)
+      this.matrix.forEach((row: Row | Row2) => row.show = true)
       return;
     }
 
@@ -149,7 +217,7 @@ class FullMatrix {
       return name;
     })
 
-    this.matrix.forEach((row: Row) => {
+    this.matrix.forEach((row: Row | Row2) => {
       row.show = matchingNames.has(row.name);
     });
 

@@ -1,13 +1,12 @@
 import prisma from "$lib/server/prisma.ts";
-import type {IRow} from "$lib/customTypes.ts";
+import type {IRow, AllOrders} from "$lib/customTypes.ts";
 import {getAllOrders} from "$lib/server/orderProvider.ts";
-import type {AllPosts} from "$lib/customTypes.ts";
 
 export async function GET({url}) {
   try {
     const show = url.searchParams.get("show") === "true";
 
-    let orders: AllPosts = await getAllOrders(show);
+    let orders: AllOrders = await getAllOrders(show);
 
     return new Response(JSON.stringify(orders, null, 2), {
       status: 200,

@@ -68,6 +68,7 @@ export interface IDisplay {
   seconds: number
 }
 
-export type AllPosts = Prisma.OrdersGetPayload<{}>[]
+export type AllOrders = Prisma.OrdersGetPayload<{}>[];
+export type OneOrder = Prisma.OrdersGetPayload<{}>;
 
 export type Maybe<T> = T | null

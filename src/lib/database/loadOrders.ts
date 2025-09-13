@@ -1,4 +1,4 @@
-import type {AllPosts, IRow, Maybe} from "$lib/customTypes.ts";
+import type {AllOrders, IRow, Maybe} from "$lib/customTypes.ts";
 // import dayjs from "dayjs";
 
 
@@ -153,7 +153,7 @@ export async function generateRandomEntries(numEntries = 10) {
   return entries;
 }
 
-export async function fetchOrders(archived: boolean = false): Promise<Maybe<AllPosts>> {
+export async function fetchOrders(archived: boolean = false): Promise<Maybe<AllOrders>> {
   const params = new URLSearchParams();
 
   if (archived) {
@@ -165,7 +165,7 @@ export async function fetchOrders(archived: boolean = false): Promise<Maybe<AllP
   try {
     const response = await fetch(url);
     if (response.ok) {
-      return await response.json() as AllPosts;
+      return await response.json() as AllOrders;
     }
   } catch (error) {
     console.error(error);

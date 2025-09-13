@@ -1,9 +1,9 @@
 import prisma from "$lib/server/prisma.ts";
 import type {IRow} from "$lib/customTypes.ts";
 import {Prisma} from "@prisma/client";
-import type {AllPosts} from "$lib/customTypes.ts";
+import type {AllOrders} from "$lib/customTypes.ts";
 
-export async function getAllOrders(seekArchived: boolean = false): Promise<AllPosts>  {
+export async function getAllOrders(seekArchived: boolean = false): Promise<AllOrders>  {
   return prisma.orders.findMany({
     where: {done: seekArchived}
   });
@@ -16,7 +16,6 @@ export async function updateAliveStatus(id: number, done: boolean) {
   });
 }
 
-//TODO change name in schema: material_price -> material
 
 export async function createOrder(order: IRow) {
   return prisma.orders.create({

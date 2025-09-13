@@ -2,10 +2,14 @@
 import Navbar from "$lib/nahore/Navbar.svelte";
 import OrderDisplay from "$lib/nahore/OrderDisplay.svelte";
 import Filter from "$lib/nahore/Filter.svelte";
+
+//TODO sync this with other pages
+let names = ["Orders", "Calendar"];
+
 </script>
 
 <div class="display-box">
-    <Navbar active={0}></Navbar>
+    <Navbar active={0} names={names}></Navbar>
     <div class="dunno">
         <Filter />
         <OrderDisplay />
