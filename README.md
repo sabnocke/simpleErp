@@ -2,18 +2,6 @@
 
 Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
-
 ## Developing
 
 Once you've created a project and installed dependencies with `bun install`, start a development server:
@@ -36,6 +24,27 @@ bun run build
 You can preview the production build with `bun run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+
+
+## Docker
+
+To run the project with docker, tagged version of frontend must exist
+
+```bash
+docker tag frontend:latest frontend:latest
+```
+
+(I have no clue if that is correct, should test that)
+
+This should be done only if `Dockerfile.dev` is updated
+
+Then
+
+```bash
+docker compose up -d
+```
+
+> if the compose file had different name it would need to be specified with a -f/--file flag
 
 # To Do
 - [ ] Rename `RadioButton` component to `Worker` or something similar
